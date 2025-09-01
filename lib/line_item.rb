@@ -1,3 +1,6 @@
+require_relative 'product'
+require_relative 'tax_calculator'
+
 class LineItem
 	attr_reader :product, :quantity
 
@@ -7,11 +10,14 @@ class LineItem
 	end
 
 	def tax
-		# TODO: implement tax calculation
+		TaxCalculator.calculate(product) * quantity
 	end
 
 	def total
-		# TODO: add tax
-		product.price * quantity
+		(product.price * quantity) + tax
+	end
+
+	def info
+		"#{quantity} #{product.name}: #{total.round(2)}"
 	end
 end

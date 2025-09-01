@@ -8,9 +8,9 @@ loop do
   items << line
 end
 
-line_items = items.map { |item| InputParser.parse(item) }.compact
+input_items = items.map { |item| InputParser.parse(item) }.compact
 
-puts line_items.inspect
+line_items = input_items.map { |item| LineItem.new(product: Product.new(item[:product_name], item[:price], item[:exempt], item[:imported]), quantity: item[:quantity]) }
 
-# receipt = Receipt.new(line_items)
-# receipt.print
+order = Order.new(line_items)
+order.receipt

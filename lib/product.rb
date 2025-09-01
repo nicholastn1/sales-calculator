@@ -1,19 +1,18 @@
 class Product
-	attr_reader :name, :price, :category
+	attr_reader :name, :price, :exempt, :imported
 
-	EXEMPT_CATEGORIES = %i[book food medical].freeze
-
-	def initialize(name:, price:, category: nil)
+	def initialize(name:, price:, exempt:, imported:)
 		@name = name
 		@price = price
-		@category = category
+		@exempt = exempt
+		@imported = imported
 	end
 
 	def exempt?
-		EXEMPT_CATEGORIES.include?(@category)
+		@exempt
 	end
 
 	def imported?
-		@name.include?('imported')
+		@imported
 	end
 end
