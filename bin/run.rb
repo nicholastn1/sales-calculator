@@ -5,8 +5,8 @@ require_relative '../lib/order'
 
 items = []
 
-loop do
-  line = gets.chomp
+while line = gets
+  line = line.chomp
   break if line.empty?
   items << line
 end
