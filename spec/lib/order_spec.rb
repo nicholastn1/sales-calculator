@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'stringio'
 require_relative '../../lib/order'
 require_relative '../../lib/line_item'
 require_relative '../../lib/product'
@@ -89,20 +88,14 @@ RSpec.describe Order do
     end
   end
 
-  describe '#receipt' do
-    it 'prints formatted receipt' do
+  describe '#to_s' do
+    it 'formats receipt correctly' do
       line_item1 = LineItem.new(product: book, quantity: 2)
       line_item2 = LineItem.new(product: music_cd, quantity: 1)
 
       order = Order.new([line_item1, line_item2])
 
-      output = StringIO.new
-      allow($stdout).to receive(:puts) { |msg| output.puts(msg) }
-
-      order.receipt
-
-      output.rewind
-      lines = output.read.split("\n")
+      lines = order.to_s.split("\n")
 
       expect(lines[0]).to eq('2 book: 24.98')
       expect(lines[1]).to eq('1 music CD: 16.49')
@@ -110,19 +103,13 @@ RSpec.describe Order do
       expect(lines[3]).to eq('Total: 41.47')
     end
 
-    it 'prints receipt for imported items' do
+    it 'formats receipt for imported items' do
       line_item1 = LineItem.new(product: imported_chocolates, quantity: 1)
       line_item2 = LineItem.new(product: imported_perfume, quantity: 1)
 
       order = Order.new([line_item1, line_item2])
 
-      output = StringIO.new
-      allow($stdout).to receive(:puts) { |msg| output.puts(msg) }
-
-      order.receipt
-
-      output.rewind
-      lines = output.read.split("\n")
+      lines = order.to_s.split("\n")
 
       expect(lines[0]).to eq('1 imported box of chocolates: 10.50')
       expect(lines[1]).to eq('1 imported bottle of perfume: 54.65')
@@ -135,13 +122,7 @@ RSpec.describe Order do
       line_item = LineItem.new(product: product, quantity: 1)
       order = Order.new([line_item])
 
-      output = StringIO.new
-      allow($stdout).to receive(:puts) { |msg| output.puts(msg) }
-
-      order.receipt
-
-      output.rewind
-      lines = output.read.split("\n")
+      lines = order.to_s.split("\n")
 
       expect(lines[1]).to eq('Sales Taxes: 1.00')
       expect(lines[2]).to eq('Total: 11.00')
@@ -150,13 +131,7 @@ RSpec.describe Order do
     it 'handles empty order' do
       order = Order.new([])
 
-      output = StringIO.new
-      allow($stdout).to receive(:puts) { |msg| output.puts(msg) }
-
-      order.receipt
-
-      output.rewind
-      lines = output.read.split("\n")
+      lines = order.to_s.split("\n")
 
       expect(lines[0]).to eq('Sales Taxes: 0.00')
       expect(lines[1]).to eq('Total: 0.00')

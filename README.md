@@ -35,6 +35,7 @@ The application calculates sales taxes for a shopping basket and prints a detail
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
   - [How to Run](#how-to-run)
+    - [Running with Docker](#running-with-docker)
     - [Running the Tests](#running-the-tests)
   - [Demonstration](#demonstration)
     - [Input 1](#input-1)
@@ -74,7 +75,7 @@ Based on the problem requirements and test cases, the following assumptions were
 ### Tax Exemption Assumptions
 
 - Tax exemptions are determined by keyword matching against the product name
-- The exempt keywords are configurable via YAML file (`config/product_categories.yml`)
+- The exempt keywords are configurable in a YAML file (`config/product_categories.yml`)
 - Current exempt keywords include: book, books, chocolate, chocolates, pills, medicine, headache
 - Keyword matching is case-sensitive and uses substring matching (e.g., "chocolate bar" matches "chocolate")
 - If a product name contains any exempt keyword, the entire product is exempt from basic sales tax
@@ -84,20 +85,20 @@ Based on the problem requirements and test cases, the following assumptions were
 - Basic sales tax rate is 10% for non-exempt items
 - Import duty rate is 5% for all imported items (no exemptions)
 - Tax rounding follows the specified rule: round up to the nearest 0.05
-- The rounding formula `(raw_tax * 20).ceil / 20.0` correctly implements "round up to nearest 0.05"
+- Rounding formula `(raw_tax * 20).ceil / 20.0` correctly implements "round up to nearest 0.05"
 - Total calculations are performed on individual line items, then summed
 
 ### Output Format Assumptions
 
 - Receipt format matches the provided examples exactly
-- Prices are displayed with 2 decimal places
+- Prices are displayed with 2 decimal figures
 - Line items show: `[quantity] [display_name]: [total_with_tax]`
 - For imported items, "imported" is prepended to the product name in the display
 - Sales taxes and total are shown at the bottom of the receipt
 
 ### Error Handling Assumptions
 
-- Invalid input lines are silently ignored (filtered out by `.compact`)
+- Invalid input lines are gracefully ignored (filtered out by `.compact`)
 - The application expects well-formed input and does not provide detailed error messages
 - Zero or negative quantities/prices are considered invalid and ignored
 
@@ -105,7 +106,7 @@ Based on the problem requirements and test cases, the following assumptions were
 
 ## Technical Decisions and Additional Features
 
-Beyond the basic requirements, several technical decisions were made to enhance code quality, maintainability, and professional standards:
+Besides the basic requirements, several technical decisions were made to enhance code quality, maintainability, and professional standards:
 
 ### Configuration Management
 
@@ -114,7 +115,8 @@ Beyond the basic requirements, several technical decisions were made to enhance 
 
 ### Comprehensive Test Suite
 
-**Implementation**: 784+ lines of RSpec tests across 5 test files covering all components
+**Implementation**: 640+ lines of RSpec tests across 5 test files covering all components
+
 **Coverage**:
 
 - Unit tests for each class (`Product`, `LineItem`, `Order`, `TaxCalculator`, `InputParser`)
@@ -133,6 +135,7 @@ Beyond the basic requirements, several technical decisions were made to enhance 
 ### Object-Oriented Design Patterns
 
 **Decision**: Implemented Domain-Driven Design principles with clear separation of concerns
+
 **Components**:
 
 - **Domain Models**: `Product` and `LineItem` represent core business entities
@@ -143,6 +146,7 @@ Beyond the basic requirements, several technical decisions were made to enhance 
 ### Input Validation and Error Handling
 
 **Decision**: Robust input parsing with validation rather than assuming perfect input
+
 **Features**:
 
 - Comprehensive input validation with graceful error handling
@@ -152,6 +156,7 @@ Beyond the basic requirements, several technical decisions were made to enhance 
 ### Containerization Support
 
 **Decision**: Included Docker configuration for consistent deployment
+
 **Benefits**: Ensures consistent Ruby environment across different development and deployment scenarios
 
 ### Professional Development Practices
@@ -173,7 +178,8 @@ Beyond the basic requirements, several technical decisions were made to enhance 
 ### Mathematical Precision
 
 **Decision**: Implemented precise tax rounding using integer arithmetic
-**Rationale**: Avoids floating-point precision errors common in financial calculations by using the mathematically correct rounding formula
+
+**Rationale**: Avoids floating-point precision errors that are common in financial calculations by using the mathematically correct rounding formula
 
 ### Extensibility Considerations
 
@@ -190,7 +196,7 @@ The architecture supports future enhancements such as:
 
 ## Design and Architecture
 
-This project follows an object-oriented architecture that adheres to the **Single Responsibility Principle (SRP)** and **Separation of Concerns** to promote clean, testable, and maintainable code.
+This project follows an object-oriented architecture that adheres to the **Single Responsibility Principle (SRP)** of SOLID, as well as **Separation of Concerns** to promote clean, testable, and maintainable code.
 
 ### Core Components
 
@@ -198,7 +204,7 @@ The solution is organized into the following key components:
 
 #### Domain Models
 
-- **`Product`**: Represents an individual item with attributes like name, price, and import status. It encapsulates business logic for determining tax exemptions by checking against configurable keywords loaded from a YAML configuration file.
+- **`Product`**: Represents an individual item with attributes such as name, price, and import status. It encapsulates business logic for determining tax exemptions by checking against configurable keywords loaded from a YAML configuration file.
 - **`LineItem`**: Represents a product with its quantity in an order. It handles the calculation of taxes and totals for a specific product-quantity combination and manages the display formatting.
 
 #### Services
@@ -237,6 +243,7 @@ This architecture ensures that business rules are isolated, components are loose
 
 - Ruby 3.4.5
 - Bundler
+- Docker (optional)
 
 ---
 
@@ -245,11 +252,11 @@ This architecture ensures that business rules are isolated, components are loose
 1.  Clone the repository to your local machine:
 
     ```bash
-    git clone [https://github.com/nicholastn1/sales-calculator.git](https://github.com/nicholastn1/sales-calculator.git)
+    git clone https://github.com/nicholastn1/sales-calculator.git
     cd sales-calculator
     ```
 
-2.  Install the dependencies (in this case, RSpec) using Bundler:
+2.  Install the dependencies (RSpec) using Bundler:
     ```bash
     bundle install
     ```
@@ -258,16 +265,16 @@ This architecture ensures that business rules are isolated, components are loose
 
 ## How to Run
 
-The run script, `bin/run.rb`, serves as the application's entry point. It expects a list of products separated by newlines.
+The run script, `bin/run`, serves as the application's entry point. It expects a list of products separated by newlines.
 You can use stdin to simulate the input file.
 
 1. Run the program with the following command:
 
 ```bash
-ruby bin/run.rb
+./bin/run
 ```
 
-And input the following:
+Then input the following:
 
 ```txt
 2 book at 12.49
@@ -282,8 +289,35 @@ And input the following:
 echo "2 book at 12.49
 1 imported box of chocolates at 10.00
 1 imported bottle of perfume at 27.99
-3 imported boxes of chocolates at 11.25" | ruby bin/run.rb
+3 imported boxes of chocolates at 11.25" | ./bin/run
 ```
+
+### Running with Docker
+
+You can also run the application using Docker, which provides a consistent environment without needing to install Ruby locally.
+
+1. Build the Docker image:
+
+```bash
+docker build -t sales-calculator .
+```
+
+2. Run the application using Docker:
+
+```bash
+echo "2 book at 12.49
+1 imported box of chocolates at 10.00
+1 imported bottle of perfume at 27.99
+3 imported boxes of chocolates at 11.25" | docker run -i sales-calculator
+```
+
+Or you can run it interactively:
+
+```bash
+docker run -i sales-calculator
+```
+
+Then enter your input line by line and press Enter on an empty line to finish.
 
 ### Running the Tests
 

@@ -24,7 +24,6 @@ class LineItem
 	private
 
 	def display_name
-		name = product.imported ? "imported #{product.name}" : product.name
-		name
+		product.imported ? "imported #{product.name}" : product.name
 	end
 end

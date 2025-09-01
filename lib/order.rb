@@ -1,5 +1,3 @@
-require_relative 'line_item'
-
 class Order
   attr_reader :line_items
 
@@ -15,11 +13,11 @@ class Order
     @line_items.sum(&:total)
   end
 
-  def receipt
-    @line_items.each do |item|
-      puts item.info
-    end
-    puts "Sales Taxes: #{'%.2f' % total_tax}"
-    puts "Total: #{'%.2f' % total_amount}"
+  def to_s
+    receipt_lines = @line_items.map(&:info)
+    receipt_lines << "Sales Taxes: #{'%.2f' % total_tax}"
+    receipt_lines << "Total: #{'%.2f' % total_amount}"
+
+    receipt_lines.join("\n")
   end
 end

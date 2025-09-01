@@ -1,4 +1,6 @@
-require_relative '../serializer/input_parser'
+#!/usr/bin/env ruby
+
+require_relative '../lib/input_parser'
 require_relative '../lib/product'
 require_relative '../lib/line_item'
 require_relative '../lib/order'
@@ -23,4 +25,4 @@ line_items = input_items.map do |item|
 end
 
 order = Order.new(line_items)
-order.receipt
+puts order

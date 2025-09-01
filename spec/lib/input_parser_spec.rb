@@ -1,5 +1,5 @@
 require 'spec_helper'
-require_relative '../../serializer/input_parser'
+require_relative '../../lib/input_parser'
 
 RSpec.describe InputParser do
   describe '.parse' do
