@@ -8,4 +8,4 @@ RUN bundle install
 
 COPY . .
 
-CMD ["ruby", "bin/demo"]
+CMD ["ruby", "bin/run.rb"]
