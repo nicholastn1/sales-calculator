@@ -17,7 +17,6 @@ line_items = input_items.map do |item|
   product = Product.new(
     name: item[:product_name],
     price: item[:price],
-    exempt: item[:exempt],
     imported: item[:imported]
   )
   LineItem.new(product: product, quantity: item[:quantity])
