@@ -18,6 +18,13 @@ class LineItem
 	end
 
 	def info
-		"#{quantity} #{product.name}: #{total.round(2)}"
+		"#{quantity} #{display_name}: #{'%.2f' % total}"
+	end
+
+	private
+
+	def display_name
+		name = product.imported ? "imported #{product.name}" : product.name
+		name
 	end
 end
